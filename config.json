@@ -30,7 +30,7 @@
   "GENDER": "MALE",
   "nickNameBot": "TUTEL BOT",
   "FACEBOOK": "https://www.facebook.com/profile.php?id=100030880666720&mibextid=ZbWKwL",
-  "prefix": "",
+  "prefix": ".",
   "database": {
     "type": "sqlite",
     "uriMongodb": "",
