@@ -24,7 +24,7 @@ module.exports = {
 
 		onStart: async function ({ api, event, args }) {
 				const listensearch = encodeURIComponent(args.join(" "));
-				const apiUrl = `http://158.101.198.227:8609/spotifydl?title=${listensearch}`;
+				const apiUrl = `https://deku-rest-api.gleeze.com/spotify?q=${listensearch}`;
 
 				if (!listensearch) return api.sendMessage("Please provide the name of the song you want to search.", event.threadID, event.messageID);
 
