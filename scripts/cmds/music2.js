@@ -1,17 +1,19 @@
 module.exports.config = {
-  name: "playlyrics",
+  name: "music2",
   version: "2.0.4",
   hasPermssion: 0,
-  credits: "Grey",
-  description: "Play a song with lyrics",
+  credits: "Grey fixed by jonell",
+  description: "Play music",
+  prefix: true,
+  usePrefix: true,
   commandCategory: "utility",
-  usages: "[title]",
+  usages: "music [your music title]",
   cooldowns: 5,
   dependencies: {
     "fs-extra": "",
     "request": "",
     "axios": "",
-    "ytdl-core": "",
+    "@distube/ytdl-core": "",
     "yt-search": ""
   }
 };
@@ -19,7 +21,7 @@ module.exports.config = {
 module.exports.run = async ({ api, event }) => {
   const axios = require("axios");
   const fs = require("fs-extra");
-  const ytdl = require("ytdl-core");
+  const ytdl = require("@distube/ytdl-core");
   const request = require("request");
   const yts = require("yt-search");
 
@@ -35,7 +37,7 @@ module.exports.run = async ({ api, event }) => {
   const song = data.join(" ");
 
   try {
-    api.sendMessage(`Finding lyrics for "${song}". Please wait...`, event.threadID);
+    api.sendMessage(`🔍 | Searching for "${song}". Please wait...`, event.threadID);
 
     const res = await axios.get(`https://api.heckerman06.repl.co/api/other/lyrics2?song=${encodeURIComponent(song)}`);
     const lyrics = res.data.lyrics || "Not found!";
@@ -70,11 +72,11 @@ module.exports.run = async ({ api, event }) => {
 
       if (fs.statSync(filePath).size > 26214400) {
         fs.unlinkSync(filePath);
-        return api.sendMessage('[ERR] The file could not be sent because it is larger than 25MB.', event.threadID);
+        return api.sendMessage('⚠ | ERROR The file could not be sent because it is larger than 25MB.', event.threadID);
       }
 
       const message = {
-        body: `Here's your music, enjoy!🥰\n\nTitle: ${title}\nArtist: ${artist}\n\nLyrics: ${lyrics}`,
+        body: `🎵 | Here's your music, enjoy!🥰\n\nTitle: ${title}\nArtist: ${artist}`,
         attachment: fs.createReadStream(filePath)
       };
 
