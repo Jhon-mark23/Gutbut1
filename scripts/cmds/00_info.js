@@ -19,7 +19,10 @@ module.exports = {
 		const botPrefix = ".";
 		const authorName = "ᴍᴀʀᴋ ᴍᴀʀᴛɪɴᴇᴢ";
 		const ownAge = "16";
+		const teamName = "Github team";
 		const authorFB = "https://www.facebook.com/profile.php?id=100030880666720&mibextid=ZbWKwL";
+		const authorInsta = "https://www.instagram.com/brtbrtbrt15?igsh=MThkZ3ZpNmxvdGZzdA==";
+		const tikTok = "tiktok.com/";
 		const urls = JSON.parse(fs.readFileSync('cliff.json'));
 		const link = urls[Math.floor(Math.random() * urls.length)];
 		const now = moment().tz('Asia/Jakarta');
@@ -39,6 +42,8 @@ module.exports = {
 \owner: ${authorName}
 \age : ${ownAge}
 \Facebook: ${authorFB}
+\Instagram: ${authorInsta}
+\TikTok: ${tikTok}
 \Datee: ${date}
 \Time: ${time}
 \Team: ${teamName}
