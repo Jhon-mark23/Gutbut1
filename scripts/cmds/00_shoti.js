@@ -26,7 +26,7 @@ module.exports = {
     api.sendMessage("Fetching Shoti video...", event.threadID, event.messageID);
 
     const videoPath = path.join(__dirname, "/cache/shoti.mp4");
-    const apiUrl = 'https://c-v1.onrender.com/shoti?apikey=$c-v1-7bejgsue6@iygv';
+    const apiUrl = 'https://shoti-api.libyzxy0.repl.co/api/get-shoti?apikey=shoti-1h7ccntg3mgjvqi8hso';
 
     try {
       const response = await axios.get(apiUrl);
