@@ -17,7 +17,6 @@ const API_KEYS = [
 
 async function video(api, event, args, message) {
 api.sendMessage(`⏳ | Music is sending please wait.`, event.messageID);
-    api.setMessageReaction("⏳", event.messageID, (err) => {}, true);
     try {
         let title = '';
         let shortUrl = '';
