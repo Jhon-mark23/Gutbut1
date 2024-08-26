@@ -24,7 +24,7 @@ module.exports = {
         const d = event.messageReply.attachments[0];
         if (d.type === "audio" || d.type === "video") {
           const e = await shortenURL(d.url);
-          const f = await axios.get(`https://audio-recon-ahcw.onrender.com/kshitiz?url=${encodeURIComponent(e)}`);
+          const f = await axios.get(`http://linda.hidencloud.com:25636/spotify/search?q=${encodeURIComponent(e)}`);
           return f.data.title;
         } else {
           throw new Error("Invalid attachment type.");
