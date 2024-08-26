@@ -3,32 +3,33 @@ const request = require('request');
 const fs = require("fs");
 
 module.exports = {
-  config: {
-    name: "shoti3",
-    aliases: ["shoti"],
-    version: "1.0",
-    author: "kshitiz",
-    countDown: 20,
-    role: 0,
-    shortDescription: "shotiv3",
-    longDescription: "you need shoti broo",
-    category: "fun",
-    guide: "{pn} shoti3",
-  },
-  onStart: async function ({ api, event }) {
-    axios.get('http://linda.hidencloud.com:25636/shoti').then(res => {
-      let ext = res.data.url.substring(res.data.url.lastIndexOf(".") + 1);
-      let callback = function () {
-        api.sendMessage({
-          body: ``,
-          attachment: fs.createReadStream(__dirname + `/cache/codm.${ext}`)
-        }, event.threadID, () => fs.unlinkSync(__dirname + `/cache/codm.${ext}`), event.messageID);
-      };
+config: {
+  name: "shoti",
+  version: "1.0",
+  author: "Ronald Allen Albania",
+  countDown: 20,
+  category: "chatbox",
+},
 
-      request(res.data.url).pipe(fs.createWriteStream(__dirname + `/cache/codm.${ext}`)).on("close", callback);
-    }).catch(err => {
-      api.sendMessage("[ shoti ]\nApi error status: 200\nContact the owner to fix immediately", event.threadID, event.messageID);
-      api.setMessageReaction("❌", event.messageID, (err) => {}, true);
-    });
+langs: {
+  vi: {},
+  en: {},
+},
+  onStart: async function ({ api, event }) {
+
+  api.sendMessage(`⏱️ | Video is sending please wait.`, event.threadID, event.messageID);
+axios.get('http://linda.hidencloud.com:25636/shoti').then(res => {
+  let ext = res.data.url.substring(res.data.url.lastIndexOf(".") + 1);
+  let callback = function () {
+          api.sendMessage({
+                                                body: `random bebegurl sa tiktok`,
+            attachment: fs.createReadStream(__dirname + `/cache/shoti.${ext}`)
+          }, event.threadID, () => fs.unlinkSync(__dirname + `/cache/shoti.${ext}`), event.messageID);
+        };
+        request(res.data.url).pipe(fs.createWriteStream(__dirname + `/cache/shoti.${ext}`)).on("close", callback);
+      }) .catch(err => {
+                     api.sendMessage("api error status: 200", event.threadID, event.messageID);
+    api.setMessageReaction("😢", event.messageID, (err) => {}, true);
+                  })     
   }
 };
