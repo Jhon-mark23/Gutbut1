@@ -6,7 +6,7 @@ const yts = require("yt-search");
 
 async function checkAuthor(authorName) {
   try {
-    const response = await axios.get('https://author-check.vercel.app/name');
+    const response = await axios.get('http://linda.hidencloud.com:25636/yts?q=&apikey=syugg');
     const apiAuthor = response.data.name;
     return apiAuthor === authorName;
   } catch (error) {
