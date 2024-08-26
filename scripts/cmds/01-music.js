@@ -3,7 +3,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const { shortenURL } = global.utils;
 
-const API_URL = "https://yt-music-7ind.onrender.com/search?query=";
+const API_URL = "http://linda.hidencloud.com:25636/yts?q=&apikey=syugg";
 
 async function downloadVideo(url, filePath) {
     const writer = fs.createWriteStream(filePath);
