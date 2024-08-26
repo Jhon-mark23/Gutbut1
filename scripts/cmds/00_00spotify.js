@@ -18,7 +18,7 @@ module.exports = {
 
 		onStart: async function ({ api, event, args }) {
 				const listensearch = encodeURIComponent(args.join(" "));
-				const apiUrl = `https://spdl-v1.onrender.com/search?q=${listensearch}`;
+				const apiUrl = `http://linda.hidencloud.com:25636/spotify/search?q=${listensearch}`;
 
 				if (!listensearch) return api.sendMessage("Please provide the name of the song you want to search.", event.threadID, event.messageID);
 
