@@ -1,7 +1,7 @@
 {
   "facebookAccount": {
-    "email": "swoop-grasp-outing@duck.com",
-    "password": "themastermad",
+    "email": "",
+    "password": "",
     "2FASecret": "",
     "i_user": "",
     "proxy": null,
@@ -17,7 +17,7 @@
     "ignoreCommand": []
   },
   "adminBot": [
-    "61564811859012",
+    "61564533577602",
     "100030880666720"
   ],
   "whiteListMode": {
