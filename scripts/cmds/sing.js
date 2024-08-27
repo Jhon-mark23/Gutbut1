@@ -17,7 +17,7 @@ const API_KEYS = [
 
 async function video(api, event, args, message) {
     api.setMessageReaction("⏳", event.messageID, (err) => {}, true);
-    let Send = await api.sendMessage(`⌛ Searching your song 🔎 ${song}`, event.threadID);
+ api.sendMessage(`⌛ Searching your song 🔎 `, event.threadID, (err) => {}, true);
     
     try {
         let title = '';
