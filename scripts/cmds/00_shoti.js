@@ -1,35 +1,56 @@
-const axios = require('axios');
-const request = require('request');
+const axios = require("axios");
 const fs = require("fs");
+const path = require("path");
 
 module.exports = {
-config: {
-  name: "shoti",
-  version: "1.0",
-  author: "Ronald Allen Albania",
-  countDown: 20,
-  category: "chatbox",
-},
+  config: {
+    name: "shoti",
+    aliases: [],
+    author: "Vex_Kshitiz",
+    version: "2.0",
+    cooldowns: 10,
+    role: 0,
+    shortDescription: "Get random shoti video",
+    longDescription: "Get random shoti video",
+    category: "fun",
+    guide: "{p}shoti",
+  },
 
-langs: {
-  vi: {},
-  en: {},
-},
-  onStart: async function ({ api, event }) {
+  onStart: async function ({ api, event, args, message }) {
+    api.setMessageReaction("🕐", event.messageID, (err) => {}, true);
 
-  api.sendMessage(`⏱️ | Video is sending please wait.`, event.threadID, event.messageID);
-axios.get('http://linda.hidencloud.com:25636/shoti').then(res => {
-  let ext = res.data.url.substring(res.data.url.lastIndexOf(".") + 1);
-  let callback = function () {
-          api.sendMessage({
-                                                body: `random bebegurl sa tiktok`,
-            attachment: fs.createReadStream(__dirname + `/cache/shoti.${ext}`)
-          }, event.threadID, () => fs.unlinkSync(__dirname + `/cache/shoti.${ext}`), event.messageID);
-        };
-        request(res.data.url).pipe(fs.createWriteStream(__dirname + `/cache/shoti.${ext}`)).on("close", callback);
-      }) .catch(err => {
-                     api.sendMessage("api error status: 200", event.threadID, event.messageID);
-    api.setMessageReaction("😢", event.messageID, (err) => {}, true);
-                  })     
+    try {
+      const response = await axios.get("https://shoti2-0-hfx0.onrender.com/kshitiz");
+      const postData = response.data.posts;
+      const randomIndex = Math.floor(Math.random() * postData.length);
+      const randomPost = postData[randomIndex];
+
+      const videoUrls = randomPost.map(url => url.replace(/\\/g, "/"));
+
+      const selectedUrl = videoUrls[Math.floor(Math.random() * videoUrls.length)];
+
+      const videoResponse = await axios.get(selectedUrl, { responseType: "stream" });
+
+      const tempVideoPath = path.join(__dirname, "cache", `${Date.now()}.mp4`);
+      const writer = fs.createWriteStream(tempVideoPath);
+      videoResponse.data.pipe(writer);
+
+      writer.on("finish", async () => {
+        const stream = fs.createReadStream(tempVideoPath);
+        const user = response.data.user || "@user_unknown";
+        await message.reply({
+          body: `username:"${user}"`,
+          attachment: stream,
+        });
+        api.setMessageReaction("✅", event.messageID, (err) => {}, true);
+        fs.unlink(tempVideoPath, (err) => {
+          if (err) console.error(err);
+          console.log(`Deleted ${tempVideoPath}`);
+        });
+      });
+    } catch (error) {
+      console.error(error);
+      message.reply("Sorry, an error occurred while processing your request.");
+    }
   }
 };
