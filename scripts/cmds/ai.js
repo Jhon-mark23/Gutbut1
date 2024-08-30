@@ -1,47 +1,69 @@
 const axios = require("axios");
-
 module.exports = {
-    config: {
-        name: "ai",
-        version: "1.0",
-        author: "Rui",
-        countDown: 5,
-        role: 0,
-        shortDescription: {
-            vi: "Tương tác với trí tuệ nhân tạo để nhận câu trả lời cho câu hỏi của bạn.",
-            en: "Interact with an AI to get responses to your questions."
-        },
-        longDescription: {
-            vi: "Tương tác với trí tuệ nhân tạo để nhận câu trả lời cho câu hỏi của bạn.",
-            en: "Interact with an AI to get responses to your questions."
-        },
-        category: "group",
-        guide: {
-            vi: "Sử dụng: `:ai <câu hỏi>`",
-            en: "Usage: `:ai <question>`"
-        }
-    },
+	config: {
+		name: 'ai',
+		version: '2.1.0',
+		author: 'KENLIEPLAYS',
+		countDown: 5,
+		role: 0,
+		shortDescription: 'AI by Kenlie Navacilla Jugarap',
+		longDescription: {
+			en: 'AI by Kenlie Navacilla Jugarap'
+		},
+		category: 'ai',
+		guide: {
+			en: '   {pn} <word>: ask with AI'
+				+ '\n   Example:{pn} hi'
+		}
+	},
 
-    onStart: async function ({ api, args, message, event, threadsData, usersData, dashBoardData, globalData, threadModel, userModel, dashBoardModel, globalModel, role, commandName, getLang }) {
-        const question = args.join(" ").trim();
-        const senderID = event.senderID;
+	langs: {
+		en: {
+			chatting: 'Please wait...',
+			error: 'If this report spam please contact Kenlie Navacilla Jugarap'
+		}
+	},
 
-        if (question) {
-            try {
-                const userName = usersData[senderID].name;
-                const botName = module.exports.config.name;
-                const formattedQuestion = `${userName} asked: ${question} (Bot: ${botName})`;
+	onStart: async function ({ args, message, event, getLang }) {
+		if (args[0]) {
+			const yourMessage = args.join(" ");
+			try {
+				const responseMessage = await getMessage(yourMessage);
+				return message.reply(`${responseMessage}`);
+			}
+			catch (err) {
+				console.log(err)
+				return message.reply(getLang("error"));
+			}
+		}
+	},
 
-                message.reply("🤖 " + getLang("hello") + ", " + userName + "! " + getLang("helloWithName", senderID));
-                const response = await axios.get(`https://hercai.onrender.com/v2/hercai?question=${encodeURIComponent(formattedQuestion)}`);
-                const aiResponse = response.data.reply;
-                message.reply(`YueAI: ${aiResponse}`);
-            } catch (error) {
-                console.error("Error fetching AI response:", error);
-                message.reply("Failed to get AI response. Please try again later.");
-            }
-        } else {
-            message.reply("Please provide a question after the command. For example: `:ai Hello`");
-        }
-    }
+	onChat: async ({ args, message, threadsData, event, isUserCallCommand, getLang }) => {
+		if (!isUserCallCommand) {
+			return;
+		}
+		if (args.length > 1) {
+			try {
+				const langCode = await threadsData.get(event.threadID, "settings.lang") || global.GoatBot.config.language;
+				const responseMessage = await getMessage(args.join(" "), langCode);
+				return message.reply(`${responseMessage}`);
+			}
+			catch (err) {
+				return message.reply(getLang("error"));
+			}
+		}
+	}
 };
+
+async function getMessage(yourMessage, langCode) {
+	try {
+		const res = await axios.get(`https://api.kenliejugarap.com/ai/?text=${yourMessage}`);
+		if (!res.data.response) {
+			throw new Error('Please contact Kenlie Navacilla Jugarap if this error spams...');
+		}
+		return res.data.response;
+	} catch (err) {
+		console.error('Error while getting a message:', err);
+		throw err;
+	}
+}
