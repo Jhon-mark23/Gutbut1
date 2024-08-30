@@ -1,77 +1,47 @@
-const axios = require('axios');
-
-async function checkAuthor(authorName) {
-  try {
-    const response = await axios.get('https://author-check.vercel.app/name');
-    const apiAuthor = response.data.name;
-    return apiAuthor === authorName;
-  } catch (error) {
-    console.error("Error checking author:", error);
-    return false;
-  }
-}
-
-async function a(api, event, args, message) {
-  try {
-    const isAuthorValid = await checkAuthor(module.exports.config.author);
-    if (!isAuthorValid) {
-      await message.reply("Author changer alert! Unauthorized modification detected.");
-      return;
-    }
-
-    const a = args.join(" ").trim();
-
-    if (!a) {
-      return message.reply("ex: {p} cmdName {your question} ");
-    }
-
-    const b = "you are zoro ai"; // the more better content you give the  best it became
-    const c = await d(a, b);
-
-    if (c.code === 2 && c.message === "success") {
-      message.reply(c.answer, (r, s) => {
-        global.GoatBot.onReply.set(s.messageID, {
-          commandName: module.exports.config.name,
-          uid: event.senderID 
-        });
-      });
-    } else {
-      message.reply("Please try again later.");
-    }
-  } catch (e) {
-    console.error("Error:", e);
-    message.reply("An error occurred while processing your request.");
-  }
-}
-
-async function d(a, b) {
-  try {
-    const d = await axios.get(`https://personal-ai-phi.vercel.app/kshitiz?prompt=${encodeURIComponent(a)}&content=${encodeURIComponent(b)}`);
-    return d.data;
-  } catch (f) {
-    console.error("Error from api", f.message);
-    throw f;
-  }
-}
+const axios = require("axios");
 
 module.exports = {
-  config: {
-    name: "TUTEL BOT AI",// add your ai name here
-    version: "1.0",
-    author: "Vex_Kshitiz", // dont change this or cmd will not work
-    role: 0,
-    longDescription: "AI",// ai description
-    category: "ai",
-    guide: {
-      en: "{p}cmdName [prompt]"// add guide based on your ai name
-    }
-  },
+    config: {
+        name: "ai",
+        version: "1.0",
+        author: "Rui",
+        countDown: 5,
+        role: 0,
+        shortDescription: {
+            vi: "Tương tác với trí tuệ nhân tạo để nhận câu trả lời cho câu hỏi của bạn.",
+            en: "Interact with an AI to get responses to your questions."
+        },
+        longDescription: {
+            vi: "Tương tác với trí tuệ nhân tạo để nhận câu trả lời cho câu hỏi của bạn.",
+            en: "Interact with an AI to get responses to your questions."
+        },
+        category: "group",
+        guide: {
+            vi: "Sử dụng: `:ai <câu hỏi>`",
+            en: "Usage: `:ai <question>`"
+        }
+    },
 
-  handleCommand: a,
-  onStart: function ({ api, message, event, args }) {
-    return a(api, event, args, message);
-  },
-  onReply: function ({ api, message, event, args }) {
-    return a(api, event, args, message);
-  }
+    onStart: async function ({ api, args, message, event, threadsData, usersData, dashBoardData, globalData, threadModel, userModel, dashBoardModel, globalModel, role, commandName, getLang }) {
+        const question = args.join(" ").trim();
+        const senderID = event.senderID;
+
+        if (question) {
+            try {
+                const userName = usersData[senderID].name;
+                const botName = module.exports.config.name;
+                const formattedQuestion = `${userName} asked: ${question} (Bot: ${botName})`;
+
+                message.reply("🤖 " + getLang("hello") + ", " + userName + "! " + getLang("helloWithName", senderID));
+                const response = await axios.get(`https://hercai.onrender.com/v2/hercai?question=${encodeURIComponent(formattedQuestion)}`);
+                const aiResponse = response.data.reply;
+                message.reply(`YueAI: ${aiResponse}`);
+            } catch (error) {
+                console.error("Error fetching AI response:", error);
+                message.reply("Failed to get AI response. Please try again later.");
+            }
+        } else {
+            message.reply("Please provide a question after the command. For example: `:ai Hello`");
+        }
+    }
 };
