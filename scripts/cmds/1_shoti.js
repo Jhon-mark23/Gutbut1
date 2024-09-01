@@ -26,7 +26,7 @@ module.exports = {
     api.sendMessage("Fetching Shoti video...", event.threadID, event.messageID);
 
     const videoPath = path.join(__dirname, "/cache/shoti.mp4");
-    const apiUrl = 'http://linda.hidencloud.com:25636/shoti';
+    const apiUrl = 'https://shoti2-0-hfx0.onrender.com/kshitiz';
 
     try {
       const response = await axios.get(apiUrl);
