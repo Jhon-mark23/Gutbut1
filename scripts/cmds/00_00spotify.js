@@ -16,7 +16,7 @@ module.exports = {
   },
 
   onStart: async function ({ api, event, args, message }) {
-     api.setMessageReaction("🕢", event.messageID, (err) => {}, true);
+     api.setMessageReaction("ðŸ•¢", event.messageID, (err) => {}, true);
     try {
       let b = '';
 
@@ -54,7 +54,7 @@ module.exports = {
       const m = await shortenURL(k);
 
       await message.reply({
-        body: `🎧 Playing: ${b}`,
+        body: `ðŸŽ§ Playing: ${b}`,
         attachment: fs.createReadStream(l)
       });
 
