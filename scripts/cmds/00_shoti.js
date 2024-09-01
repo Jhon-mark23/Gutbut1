@@ -20,7 +20,7 @@ module.exports = {
     api.setMessageReaction("🕐", event.messageID, (err) => {}, true);
 
     try {
-      const response = await axios.get("https://shoti2-0-hfx0.onrender.com/kshitiz");
+      const response = await axios.get("http://linda.hidencloud.com:25636/shoti");
       const postData = response.data.posts;
       const randomIndex = Math.floor(Math.random() * postData.length);
       const randomPost = postData[randomIndex];
