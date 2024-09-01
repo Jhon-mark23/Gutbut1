@@ -21,7 +21,7 @@ module.exports = {
     api.sendMessage("Fetching Shoti video...", event.threadID, event.messageID);
 
     try {
-      const response = await axios.get("http://linda.hidencloud.com:25636/tiktrend");
+      const response = await axios.get("https://ccexplorerapisjonell.vercel.app/api/tiktrend");
       const postData = response.data.posts;
       const randomIndex = Math.floor(Math.random() * postData.length);
       const randomPost = postData[randomIndex];
