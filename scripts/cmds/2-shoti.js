@@ -17,7 +17,7 @@ module.exports = {
   },
 
   onStart: async function ({ api, event, args, message }) {
-    api.setMessageReaction("🕐", event.messageID, (err) => {}, true);
+    api.setMessageReaction("⏳", event.messageID, (err) => {}, true);
     api.sendMessage("Fetching Shoti video...", event.threadID, event.messageID);
 
     try {
