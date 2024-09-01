@@ -16,10 +16,10 @@ module.exports = {
 			session2: "trưa",
 			session3: "chiều",
 			session4: "tối",
-			welcomeMessage: "Cảm ơn bạn đã mời tôi vào nhóm!\nPrefix bot: %1\nĐể xem danh sách lệnh hãy nhập: %1help",
+			welcomeMessage: "WELCOME SA BUHAY NI TUTEL UWU",
 			multiple1: "bạn",
 			multiple2: "các bạn",
-			defaultWelcomeMessage: "Xin chào {userName}.\nChào mừng bạn đến với {boxName}.\nChúc bạn có buổi {session} vui vẻ!"
+			defaultWelcomeMessage: "HELLO WELCOME {userName}.\nSANA MABULOK KA DITO INAMK {boxName}.\nEYY KA MUNA EYY {session} YOW"
 		},
 		en: {
 			session1: "morning",
