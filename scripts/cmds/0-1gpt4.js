@@ -24,7 +24,7 @@ module.exports = {
       if (prompt) {
         await api.sendMessage("Answering your question. Please wait a moment...", event.threadID);
 
-        const response = await axios.get(`http://linda.hidencloud.com:25636/yawa?content=${encodeURIComponent(prompt)}`);
+        const response = await axios.get(`https://deku-rest-api.gleeze.com/gpt4?prompt=hi&uid=100${encodeURIComponent(prompt)}`);
 
         if (response.status === 200 && response.data && response.data.content) {
           const messageText = response.data.content.trim();
