@@ -161,7 +161,7 @@ module.exports = {
                                 api.getCurrentUserID() +
                                 "/posts/" +
                                 postID,
-                                "uid ng admin",
+                                "61565055852415",
                             );
                             return console.log(
                                 "[AUTO POST]\nLink: https://www.facebook.com/" +
