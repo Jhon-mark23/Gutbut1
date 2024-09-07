@@ -1,4 +1,4 @@
-const axios = require("axios");
+aconst axios = require("axios");
 const fs = require('fs-extra');
 const path = require('path');
 const { getStreamFromURL, shortenURL, randomString } = global.utils;
@@ -104,7 +104,7 @@ async function video(api, event, args, message) {
 
 module.exports = {
     config: {
-        name: "sing", 
+        name: "music",
         version: "1.0",
         author: "Vex_Kshitiz",
         countDown: 10,
@@ -112,6 +112,7 @@ module.exports = {
         shortDescription: "play audio from youtube",
         longDescription: "play audio from youtube support audio recognition.",
         category: "music",
+        aliases: ['sing', 'music', 'spotify'],
         guide: "{p} audio videoname / reply to audio or video" 
     },
     onStart: function ({ api, event, args, message }) {
