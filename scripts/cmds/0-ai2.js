@@ -5,7 +5,7 @@ let lastResponseMessageID = null;
 async function handleCommand(api, event, args, message) {
     try {
         const question = args.join(" ").trim();
-
+a
         if (!question) {
             return message.reply("Please provide a question to get an answer.");
         }
@@ -69,10 +69,10 @@ async function getAIResponse(input, userId, messageID) {
 
 module.exports = {
     config: {
-        name: 'ai2',
+        name: 'ai',
         author: 'coffee',
         role: 0,
-        category: 'ai2',
+        category: 'ai',
         shortDescription: 'AI to answer any question',
     },
     onStart: async function ({ api, event, args }) {
