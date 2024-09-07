@@ -112,7 +112,6 @@ module.exports = {
         shortDescription: "play audio from youtube",
         longDescription: "play audio from youtube support audio recognition.",
         category: "music",
-        aliases: ['sing', 'music', 'spotify'],
         guide: "{p} audio videoname / reply to audio or video" 
     },
     onStart: function ({ api, event, args, message }) {
