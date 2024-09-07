@@ -36,7 +36,7 @@ async function a(api, event, args, message) {
         });
       });
     } else {
-      message.reply("Please try again later.");
+      message.reply(" 🥲 | Please try again later.");
     }
   } catch (e) {
     console.error("Error:", e);
@@ -63,15 +63,19 @@ module.exports = {
     longDescription: "your ai description",// ai description
     category: "ai",
     guide: {
-      en: "{ai}ai [prompt]"// add guide based on your ai name
+      en: "ai what is the meaning of life"// add guide based on your ai name
     }
   },
 
   handleCommand: a,
   onStart: function ({ api, message, event, args }) {
+  api.sendMessage('⏳ |Sending please wait..', event.threadID);
+    api.setMessageReaction("⏳", event.messageID, (err) => {}, true);
     return a(api, event, args, message);
   },
   onReply: function ({ api, message, event, args }) {
+  api.sendMessage('🤖 𝐀𝐈 𝐀𝐍𝐒𝐖𝐄𝐑 \n\n »»————> ---- <————«« ', event.threadID);
+    api.setMessageReaction("🤙", event.messageID, (err) => {}, true);
     return a(api, event, args, message);
   }
 };
