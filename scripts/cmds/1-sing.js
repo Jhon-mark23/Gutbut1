@@ -1,4 +1,4 @@
-aconst axios = require("axios");
+const axios = require("axios");
 const fs = require('fs-extra');
 const path = require('path');
 const { getStreamFromURL, shortenURL, randomString } = global.utils;
@@ -104,7 +104,7 @@ async function video(api, event, args, message) {
 
 module.exports = {
     config: {
-        name: "music",
+        name: "sing", 
         version: "1.0",
         author: "Vex_Kshitiz",
         countDown: 10,
