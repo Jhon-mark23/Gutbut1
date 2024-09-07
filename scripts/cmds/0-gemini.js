@@ -1,214 +1,108 @@
-const axios = require('axios');
-const fs = require('fs-extra');
-const path = require('path');
-const ytdl = require("ytdl-core");
-const yts = require("yt-search");
+const axios = require("axios");
+let fontEnabled = true;
 
-async function lado(api, event, args, message) {
-  try {
-    const songName = args.join(" ");
-    const searchResults = await yts(songName);
-
-    if (!searchResults.videos.length) {
-      message.reply("No song found for the given query.");
-      return;
-    }
-
-    const video = searchResults.videos[0];
-    const videoUrl = video.url;
-    const stream = ytdl(videoUrl, { filter: "audioonly" });
-    const fileName = `music.mp3`; 
-    const filePath = path.join(__dirname, "tmp", fileName);
-
-    stream.pipe(fs.createWriteStream(filePath));
-
-    stream.on('response', () => {
-      console.info('[DOWNLOADER]', 'Starting download now!');
-    });
-
-    stream.on('info', (info) => {
-      console.info('[DOWNLOADER]', `Downloading ${info.videoDetails.title} by ${info.videoDetails.author.name}`);
-    });
-
-    stream.on('end', () => {
-      const audioStream = fs.createReadStream(filePath);
-      message.reply({ attachment: audioStream });
-      api.setMessageReaction("✅", event.messageID, () => {}, true);
-    });
-  } catch (error) {
-    console.error("Error:", error);
-    message.reply("Sorry, an error occurred while processing your request.");
-  }
-}
-
-async function kshitiz(api, event, args, message) {
-  try {
-    const query = args.join(" ");
-    const searchResults = await yts(query);
-
-    if (!searchResults.videos.length) {
-      message.reply("No videos found for the given query.");
-      return;
-    }
-
-    const video = searchResults.videos[0];
-    const videoUrl = video.url;
-    const stream = ytdl(videoUrl, { filter: "audioandvideo" }); 
-    const fileName = `music.mp4`;
-    const filePath = path.join(__dirname, "tmp", fileName);
-
-    stream.pipe(fs.createWriteStream(filePath));
-
-    stream.on('response', () => {
-      console.info('[DOWNLOADER]', 'Starting download now!');
-    });
-
-    stream.on('info', (info) => {
-      console.info('[DOWNLOADER]', `Downloading ${info.videoDetails.title} by ${info.videoDetails.author.name}`);
-    });
-
-    stream.on('end', () => {
-      const videoStream = fs.createReadStream(filePath);
-      message.reply({ attachment: videoStream });
-      api.setMessageReaction("✅", event.messageID, () => {}, true);
-    });
-  } catch (error) {
-    console.error(error);
-    message.reply("Sorry, an error occurred while processing your request.");
-  }
-}
-
-async function b(c, d, e, f) {
-  try {
-    const g = await axios.get(`https://gemini-ai-pearl-two.vercel.app/kshitiz?prompt=${encodeURIComponent(c)}&uid=${d}&apikey=kshitiz`);
-    return g.data.answer;
-  } catch (h) {
-    throw h;
-  }
-}
-
-async function i(c) {
-  try {
-    const j = await axios.get(`https://sdxl-kshitiz.onrender.com/gen?prompt=${encodeURIComponent(c)}&style=3`);
-    return j.data.url;
-  } catch (k) {
-    throw k;
-  }
-}
-
-async function describeImage(prompt, photoUrl) {
-  try {
-    const url = `https://sandipbaruwal.onrender.com/gemini2?prompt=${encodeURIComponent(prompt)}&url=${encodeURIComponent(photoUrl)}`;
-    const response = await axios.get(url);
-    return response.data.answer;
-  } catch (error) {
-    throw error;
-  }
-}
-
-async function l({ api, message, event, args }) {
-  try {
-    const m = event.senderID;
-    let n = "";
-    let draw = false;
-    let sendTikTok = false;
-    let sing = false;
-
-    if (args[0].toLowerCase() === "draw") {
-      draw = true;
-      n = args.slice(1).join(" ").trim();
-    } else if (args[0].toLowerCase() === "send") {
-      sendTikTok = true;
-      n = args.slice(1).join(" ").trim();
-    } else if (args[0].toLowerCase() === "sing") {
-      sing = true;
-      n = args.slice(1).join(" ").trim();
-    } else if (event.messageReply && event.messageReply.attachments && event.messageReply.attachments.length > 0) {
-      const photoUrl = event.messageReply.attachments[0].url;
-      n = args.join(" ").trim();
-      const description = await describeImage(n, photoUrl);
-      message.reply(`Description: ${description}`);
-      return;
-    } else {
-      n = args.join(" ").trim();
-    }
-
-    if (!n) {
-      return message.reply("Please provide a prompt.");
-    }
-
-    if (draw) {
-      await drawImage(message, n);
-    } else if (sendTikTok) {
-      await kshitiz(api, event, args.slice(1), message); 
-    } else if (sing) {
-      await lado(api, event, args.slice(1), message); 
-    } else {
-      const q = await b(n, m);
-      message.reply(q, (r, s) => {
-        global.GoatBot.onReply.set(s.messageID, {
-          commandName: a.name,
-          uid: m 
-        });
-      });
-    }
-  } catch (t) {
-    console.error("Error:", t.message);
-    message.reply("An error occurred while processing the request.");
-  }
-}
-
-async function drawImage(message, prompt) {
-  try {
-    const u = await i(prompt);
-
-    const v = path.join(__dirname, 'cache', `image_${Date.now()}.png`);
-    const writer = fs.createWriteStream(v);
-
-    const response = await axios({
-      url: u,
-      method: 'GET',
-      responseType: 'stream'
-    });
-
-    response.data.pipe(writer);
-
-    return new Promise((resolve, reject) => {
-      writer.on('finish', resolve);
-      writer.on('error', reject);
-    }).then(() => {
-      message.reply({
-        body: "Generated image:",
-        attachment: fs.createReadStream(v)
-      });
-    });
-  } catch (w) {
-    console.error("Error:", w.message);
-    message.reply("An error occurred while processing the request.");
-  }
-}
-
-const a = {
+module.exports.config = {
   name: "gemini",
-  aliases: ["bard"],
-  version: "4.0",
-  author: "vex_kshitiz",
-  countDown: 5,
-  role: 0,
-  longDescription: "Chat with gemini",
-  category: "ai",
-  guide: {
-    en: "{p}gemini {prompt}"
+  version: "6.2",
+  permission: 0,
+  credits: "Hazeyy",
+  description: "( 𝙶𝚎𝚖𝚒𝚗𝚒 𝙿𝚛𝚘 𝚅𝚒𝚜𝚒𝚘𝚗 )",
+  commandCategory: "𝚗𝚘 𝚙𝚛𝚎𝚏𝚒𝚡",
+  usage: "( 𝙼𝚘𝚍𝚎𝚕 - 𝙶𝚎𝚖𝚒𝚗𝚒 𝙿𝚛𝚘 𝚅𝚒𝚜𝚒𝚘𝚗 )",
+  cooldown: 3,
+};
+
+async function convertImageToCaption(imageURL, api, event, inputText) {
+  try {
+    api.sendMessage("🕟 | 𝙶𝚎𝚖𝚒𝚗𝚒 𝙰𝙸 𝚁𝚎𝚌𝚘𝚐𝚗𝚒𝚣𝚒𝚗𝚐 𝙸𝚖𝚊𝚐𝚎, 𝚙𝚕𝚎𝚊𝚜𝚎 𝚠𝚊𝚒𝚝...", event.threadID, event.messageID);
+
+    const response = await axios.get(`https://hazee-gemini-pro-vision-12174af6c652.herokuapp.com/gemini-vision?text=${encodeURIComponent(inputText)}&image_url=${encodeURIComponent(imageURL)}`);
+    const caption = response.data.response;
+
+    if (caption) {
+      const formattedCaption = formatFont(caption);
+      api.sendMessage(`🎓 𝐆𝐞𝐦𝐢𝐧𝐢 𝐏-𝐕𝐢𝐬𝐢𝐨𝐧 ( 𝐀𝐈 )\n\n🖋️ 𝙰𝚜𝚔: '${inputText}'\n\n${formattedCaption}`, event.threadID, event.messageID);
+    } else {
+      api.sendMessage("🤖 𝙵𝚊𝚒𝚕𝚎𝚍 𝚝𝚘 𝚛𝚎𝚌𝚘𝚐𝚗𝚒𝚣𝚎𝚍 𝚝𝚑𝚎 𝚒𝚖𝚊𝚐𝚎𝚜.", event.threadID, event.messageID);
+    }
+  } catch (error) {
+    console.error("🤖 𝙴𝚛𝚛𝚘𝚛 𝚘𝚌𝚌𝚞𝚛𝚎𝚍 𝚠𝚑𝚒𝚕𝚎 𝚛𝚎𝚌𝚘𝚐𝚗𝚒𝚣𝚒𝚗𝚐 𝚒𝚖𝚊𝚐𝚎:", error);
+    api.sendMessage("🤖 𝙰𝚗 𝙴𝚛𝚛𝚘𝚛 𝚘𝚌𝚌𝚞𝚛𝚎𝚍 𝚠𝚑𝚒𝚕𝚎 𝚛𝚎𝚌𝚘𝚐𝚗𝚒𝚣𝚒𝚗𝚐 𝚒𝚖𝚊𝚐𝚎.", event.threadID, event.messageID);
+  }
+}
+
+module.exports.handleEvent = async function ({ api, event }) {
+  if (!(event.body.toLowerCase().startsWith("gemini"))) return;
+
+  const args = event.body.split(/\s+/);
+  args.shift();
+
+  if (event.type === "message_reply") {
+    if (event.messageReply.attachments[0]) {
+      const attachment = event.messageReply.attachments[0];
+
+       if (attachment.type === "photo") {
+        const imageURL = attachment.url;
+        convertImageToCaption(imageURL, api, event, args.join(' '));
+        return;
+      }
+    }
+  }
+
+  const inputText = args.join(' ');
+
+  if (!inputText) {
+    return api.sendMessage("🐱 𝙷𝚎𝚕𝚕𝚘 𝙸 𝚊𝚖 𝙶𝚎𝚖𝚒𝚗𝚒 𝙿𝚛𝚘 𝚅𝚒𝚜𝚒𝚘𝚗 𝚝𝚛𝚊𝚒𝚗𝚎𝚍 𝚋𝚢 𝙶𝚘𝚘𝚐𝚕𝚎\n\n𝙷𝚘𝚠 𝚖𝚊𝚢 𝚒 𝚊𝚜𝚜𝚒𝚜𝚝 𝚢𝚘𝚞 𝚝𝚘𝚍𝚊𝚢?", event.threadID, event.messageID);
+  }
+
+  if (args[0] === "on") {
+    fontEnabled = true;
+    api.sendMessage({ body: "🎓 𝐆𝐞𝐦𝐢𝐧𝐢 𝐏-𝐕𝐢𝐬𝐢𝐨𝐧 ( 𝐀𝐈 )\n\n» 🟢 𝙵𝚘𝚗𝚝 𝙵𝚘𝚛𝚖𝚊𝚝𝚝𝚒𝚗𝚐 𝚒𝚜 𝚗𝚘𝚠 𝙴𝚗𝚊𝚋𝚕𝚎𝚍 «" }, event.threadID, event.messageID);
+    return;
+  }
+
+  if (args[0] === "off") {
+    fontEnabled = false;
+    api.sendMessage({ body: "🎓 𝐆𝐞𝐦𝐢𝐧𝐢 𝐏-𝐕𝐢𝐬𝐢𝐨𝐧 ( 𝐀𝐈 )\n\n» 🔴 𝙵𝚘𝚗𝚝 𝙵𝚘𝚛𝚖𝚊𝚝𝚝𝚒𝚗𝚐 𝚒𝚜 𝚗𝚘𝚠 𝙳𝚒𝚜𝚊𝚋𝚕𝚎𝚍 «" }, event.threadID, event.messageID);
+    return;
+  }
+
+  api.sendMessage("🗨️ | 𝙶𝚎𝚖𝚒𝚗𝚒 𝙰𝙸 𝚒𝚜 𝚝𝚑𝚒𝚗𝚔𝚒𝚗𝚐, 𝙿𝚕𝚎𝚊𝚜𝚎 𝚠𝚊𝚒𝚝...", event.threadID, event.messageID);
+
+  try {
+    const response = await axios.get(`https://hazee-gemini-pro-vision-12174af6c652.herokuapp.com/gemini-vision?text=${encodeURIComponent(inputText)}`);
+    if (response.status === 200 && response.data.response) {
+    const formattedResponse = formatFont(response.data.response);
+      api.sendMessage(`🎓 𝐆𝐞𝐦𝐢𝐧𝐢 𝐏-𝐕𝐢𝐬𝐢𝐨𝐧 ( 𝐀𝐈 )\n\n🖋️ 𝙰𝚜𝚔: '${inputText}'\n\n${formattedResponse}`, event.threadID, event.messageID);
+    } else {
+      console.error("🤖 𝙴𝚛𝚛𝚘𝚛 𝚐𝚎𝚗𝚎𝚛𝚊𝚝𝚒𝚗𝚐 𝚛𝚎𝚜𝚙𝚘𝚗𝚜𝚎 𝙵𝚛𝚘𝚖 𝙶𝚎𝚖𝚒𝚗𝚒 𝙰𝙿𝙸.");
+    }
+  } catch (error) {
+    console.error("🤖 𝙴𝚛𝚛𝚘𝚛:", error);
+    api.sendMessage("🤖 𝙰𝚗 𝚎𝚛𝚛𝚘𝚛 𝚘𝚌𝚌𝚞𝚛𝚎𝚍 𝚠𝚑𝚒𝚕𝚎 𝚙𝚛𝚘𝚌𝚎𝚜𝚜𝚒𝚗𝚐 𝙶𝚎𝚖𝚒𝚗𝚒 𝙰𝙿𝙸.", event.threadID, event.messageID);
   }
 };
 
-module.exports = {
-  config: a,
-  handleCommand: l,
-  onStart: function ({ api, message, event, args }) {
-    return l({ api, message, event, args });
-  },
-  onReply: function ({ api, message, event, args }) {
-    return l({ api, message, event, args });
+function formatFont(text) {
+  const fontMapping = {
+    a: "𝚊", b: "𝚋", c: "𝚌", d: "𝚍", e: "𝚎", f: "𝚏", g: "𝚐", h: "𝚑", i: "𝚒", j: "𝚓", k: "𝚔", l: "𝚕", m: "𝚖",
+    n: "𝚗", o: "𝚘", p: "𝚙", q: "𝚚", r: "𝚛", s: "𝚜", t: "𝚝", u: "𝚞", v: "𝚟", w: "𝚠", x: "𝚡", y: "𝚢", z: "𝚣",
+    A: "𝙰", B: "𝙱", C: "𝙲", D: "𝙳", E: "𝙴", F: "𝙵", G: "𝙶", H: "𝙷", I: "𝙸", J: "𝙹", K: "𝙺", L: "𝙻", M: "𝙼",
+    N: "𝙽", O: "𝙾", P: "𝙿", Q: "𝚀", R: "𝚁", S: "𝚂", T: "𝚃", U: "𝚄", V: "𝚅", W: "𝚆", X: "𝚇", Y: "𝚈", Z: "𝚉"
+  };
+
+  let formattedText = "";
+  for (const char of text) {
+    if (char === ' ') {
+      formattedText += ' '; 
+    } else if (char in fontMapping) {
+      formattedText += fontMapping[char];
+    } else {
+      formattedText += char;
+    }
   }
-};
+
+  return formattedText;
+}
+
+module.exports.run = async function ({ api, event }) {};
