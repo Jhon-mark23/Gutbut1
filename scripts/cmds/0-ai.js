@@ -1,49 +1,77 @@
 const axios = require('axios');
 
-module.exports.config = {
-    name: "ai",
-    version: "1.0.0",
-    hasPermission: 0,
-    credits: "api by jerome",//api by jerome
-    description: "Gpt architecture",
-    usePrefix: false,
-    commandCategory: "GPT4",
-    cooldowns: 5,
-};
+async function checkAuthor(authorName) {
+  try {
+    const response = await axios.get('https://author-check.vercel.app/name');
+    const apiAuthor = response.data.name;
+    return apiAuthor === authorName;
+  } catch (error) {
+    console.error("Error checking author:", error);
+    return false;
+  }
+}
 
-module.exports.run = async function ({ api, event, args }) {
-    try {
-        const { messageID, messageReply } = event;
-        let prompt = args.join(' ');
-
-        if (messageReply) {
-            const repliedMessage = messageReply.body;
-            prompt = `${repliedMessage} ${prompt}`;
-        }
-
-        if (!prompt) {
-            return api.sendMessage('Please provide a prompt to generate a text response.\nExample: ai What is the meaning of life?', event.threadID, messageID);
-        }
-        api.sendMessage('🔍 Searching for an answer to your question...', event.threadID);
-
-        // Delay
-        await new Promise(resolve => setTimeout(resolve, 2000)); // Adjust the delay time as needed
-
-        const gpt4_api = `https://gpt4withcustommodel.onrender.com/gpt?query=${encodeURIComponent(prompt)}&model=gpt-4`;
-
-        const response = await axios.get(gpt4_api);
-
-        if (response.data && response.data.response) {
-            const generatedText = response.data.response;
-
-            // Ai Answer Here
-            api.sendMessage(`🤖 Ai Answer\n━━━━━━━━━━━━━━━━\n\n(ᴏᴡɴᴇʀ: ᴍᴀʀᴋ ᴍᴀʀᴛɪɴᴇᴢ)\n\n𝗔𝗻𝘀𝘄𝗲𝗿: ${generatedText}\n\n━━━━━━━━━━━━━━━━`, event.threadID, messageID);
-        } else {
-            console.error('API response did not contain expected data:', response.data);
-            api.sendMessage(`❌ ᴀɴ ᴇʀʀᴏʀ ᴏᴄᴄᴜʀʀᴇᴅ ᴡʜɪʟᴇ ɢᴇɴᴇʀᴀᴛɪɴɢ ᴛʜᴇ ᴛᴇxᴛ ʀᴇsᴘᴏɴsᴇ. ᴘʟᴇᴀsᴇ ᴛʀʏ ᴀɢᴀɪɴ ʟᴀᴛᴇʀ. Response data: ${JSON.stringify(response.data)}`, event.threadID, messageID);
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        api.sendMessage(`❌ ᴀɴ ᴇʀʀᴏʀ ᴏᴄᴄᴜʀʀᴇᴅ ᴡʜɪʟᴇ ɢᴇɴᴇʀᴀᴛɪɴɢ ᴛʜᴇ ᴛᴇxᴛ ʀᴇsᴘᴏɴsᴇ. ᴘʟᴇᴀsᴇ ᴛʀʏ ᴀɢᴀɪɴ ʟᴀᴛᴇʀ. Error details: ${error.message}`, event.threadID, event.messageID);
+async function a(api, event, args, message) {
+  try {
+    const isAuthorValid = await checkAuthor(module.exports.config.author);
+    if (!isAuthorValid) {
+      await message.reply("Author changer alert! Unauthorized modification detected.");
+      return;
     }
+
+    const a = args.join(" ").trim();
+
+    if (!a) {
+      return message.reply("ex: {p} cmdName {your question} ");
+    }
+
+    const b = "you are zoro ai"; // the more better content you give the  best it became
+    const c = await d(a, b);
+
+    if (c.code === 2 && c.message === "success") {
+      message.reply(c.answer, (r, s) => {
+        global.GoatBot.onReply.set(s.messageID, {
+          commandName: module.exports.config.name,
+          uid: event.senderID 
+        });
+      });
+    } else {
+      message.reply("Please try again later.");
+    }
+  } catch (e) {
+    console.error("Error:", e);
+    message.reply("An error occurred while processing your request.");
+  }
+}
+
+async function d(a, b) {
+  try {
+    const d = await axios.get(`https://personal-ai-phi.vercel.app/kshitiz?prompt=${encodeURIComponent(a)}&content=${encodeURIComponent(b)}`);
+    return d.data;
+  } catch (f) {
+    console.error("Error from api", f.message);
+    throw f;
+  }
+}
+
+module.exports = {
+  config: {
+    name: "ai",// add your ai name here
+    version: "1.0",
+    author: "Vex_Kshitiz", // dont change this or cmd will not work
+    role: 0,
+    longDescription: "your ai description",// ai description
+    category: "ai",
+    guide: {
+      en: "{ai}ai [prompt]"// add guide based on your ai name
+    }
+  },
+
+  handleCommand: a,
+  onStart: function ({ api, message, event, args }) {
+    return a(api, event, args, message);
+  },
+  onReply: function ({ api, message, event, args }) {
+    return a(api, event, args, message);
+  }
 };
