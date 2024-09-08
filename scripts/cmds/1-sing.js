@@ -104,7 +104,8 @@ async function video(api, event, args, message) {
 
 module.exports = {
     config: {
-        name: "sing", 
+        name: "sing",
+        aliases: ["sing", "music", "kanta", "spotify"],
         version: "1.0",
         author: "Vex_Kshitiz",
         countDown: 10,
