@@ -89,7 +89,7 @@ async function b(c, d, e, f) {
 
 async function i(c) {
   try {
-    const j = await axios.get(`https://deku-rest-api.gleeze.com/gemini?prompt=${encodeURIComponent(c)}&style=3`);
+    const j = await axios.get(`https://sdxl-kshitiz.onrender.com/gen?prompt=${encodeURIComponent(c)}&style=3`);
     return j.data.url;
   } catch (k) {
     throw k;
@@ -98,7 +98,7 @@ async function i(c) {
 
 async function describeImage(prompt, photoUrl) {
   try {
-    const url = `https://deku-rest-api.gleeze.com/gemini?prompt=${encodeURIComponent(prompt)}&url=${encodeURIComponent(photoUrl)}`;
+    const url = `https://sandipbaruwal.onrender.com/gemini2?prompt=${encodeURIComponent(prompt)}&url=${encodeURIComponent(photoUrl)}`;
     const response = await axios.get(url);
     return response.data.answer;
   } catch (error) {
@@ -190,7 +190,7 @@ async function drawImage(message, prompt) {
 
 const a = {
   name: "gemini",
-  aliases: ["bard", "gm"],
+  aliases: ["bard"],
   version: "4.0",
   author: "vex_kshitiz",
   countDown: 5,
