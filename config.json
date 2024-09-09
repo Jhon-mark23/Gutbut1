@@ -1,7 +1,7 @@
 {
   "facebookAccount": {
-    "email": "",
-    "password": "",
+    "email": "oat-gladly-lagoon@duck.com",
+    "password": "gonzales.1",
     "2FASecret": "",
     "i_user": "",
     "proxy": null,
@@ -18,7 +18,8 @@
   },
   "adminBot": [
     "61564533577602",
-    "100030880666720"
+    "100030880666720",
+    "61565831300580"
   ],
   "whiteListMode": {
     "enable": false,

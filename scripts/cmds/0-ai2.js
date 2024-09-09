@@ -23,8 +23,11 @@ a
 async function getAnswerFromAI(question) {
     try {
         const services = [
+            { url: 'https://deku-rest-api.gleeze.com/gpt4', params: { prompt: question, uid: '100' } },  //prompt=hi&uid=100
             { url: 'https://markdevs-last-api.onrender.com/gpt4', params: { prompt: question, uid: 'your-uid-here' } },
             { url: 'http://markdevs-last-api.onrender.com/api/v2/gpt4', params: { query: question } },
+            { url: 'https://deku-rest-api.gleeze.com/gemini', params: { query: question } },
+            { url: 'https://deku-rest-api.gleeze.com/gemini', params: { ask: question } },
             { url: 'https://markdevs-last-api.onrender.com/api/v3/gpt4', params: { ask: question } }
         ];
 
